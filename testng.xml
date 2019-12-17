@@ -4,7 +4,7 @@
 	<listeners>
 		<listener class-name="com.qa.listeners.TestListener" />
 	</listeners>
-	<parameter name="browser" value="Firefox" />
+	<parameter name="browser" value="IE" />
 	<test thread-count="1" name="Test">
 		<classes>
 			<class name="com.qa.base.TestBase" />

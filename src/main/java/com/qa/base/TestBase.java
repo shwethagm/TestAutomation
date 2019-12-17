@@ -5,6 +5,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
@@ -50,6 +52,9 @@ public class TestBase {
 		case "Edge":
 			initializeEdge(appURL);
 			break;
+		case "IE":
+			initializeIE(appURL);
+			break;
 		}
 	}
 
@@ -78,5 +83,16 @@ public class TestBase {
 		driver.manage().window().maximize();
 		driver.navigate().to(appURL);
 	}
+
+	private void initializeIE(String appURL) {
+		log.info("Launching Internet Explorer browser...");	
+		System.setProperty("webdriver.ie.driver", userDir + "\\drivers\\IEDriverServer32bit.exe");
+		DesiredCapabilities caps = DesiredCapabilities.internetExplorer();
+		caps.setCapability("ignoreZoomSetting", true);
+		driver = new InternetExplorerDriver(caps);
+		driver.manage().window().maximize();
+		driver.navigate().to(appURL);
+	}
+
 
 }
