@@ -1,47 +1,80 @@
 package com.qa.base;
 
+import java.util.concurrent.TimeUnit;
+
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Parameters;
 
 import com.qa.util.LoggerUtil;
 
-
 public class TestBase {
 
-	public static WebDriver driver;
-	private Logger log = LoggerUtil.getLogger(); 
+	public static WebDriver driver = null;
+	public static Logger log = LoggerUtil.getLogger();
 	String userDir = System.getProperty("user.dir");
-	
+
+	public TestBase() {
+		log.info("TestBase() constructor");
+	}
+
 	public static WebDriver getDriver() {
+		log.info("getDriver driver=" + driver);
 		return driver;
 	}
 
-	@Parameters({ "browser"})
-	@BeforeClass 
+	@BeforeClass
+	public void BeforeClassTestBase() {
+		log.info("@BeforeClass TestBase");
+	}
+
+	@AfterClass
+	public void AfterClassTestBase() {
+		log.info("@AfterClass TestBase");
+	}
+
+	@BeforeTest
+	public void BeforeTestTestBase() {
+		log.info("@BeforeTest TestBase");
+	}
+
+	@AfterTest
+	public void AfterTestTestBase() {
+		log.info("@AfterTest TestBase");
+	}
+
+	@Parameters({ "browser" })
+	@BeforeSuite
 	public void initializeTestBaseSetup(String browser) {
-		String appURL = "https://www.google.com";
-		log.info(" browser="+browser+" appURL="+appURL);
+		String appURL = "https://stackoverflow.com/questions";
+		log.info("@@BeforeSuite browser=" + browser + " appURL=" + appURL);
 		try {
 			initDriver(browser, appURL);
 		} catch (Exception e) {
-			System.out.println("Error....." + e.getStackTrace());
+			log.info("Exception stack ....." + e.getStackTrace());
+			log.info("Exception String ....." + e.toString());
+			log.info("Exception Message....." + e.getMessage());
 		}
 	}
-	
-	@AfterClass
+
+	@AfterSuite
 	public void tearDown() {
+		log.info("@@AfterSuite tearDown");
 		driver.quit();
 	}
 
 	private void initDriver(String browser, String appURL) {
+		log.info("initDriver");
 		switch (browser) {
 		case "Chrome":
 			initializeChrome(appURL);
@@ -59,11 +92,13 @@ public class TestBase {
 	}
 
 	private void initializeChrome(String appURL) {
-		log.info("Launching google chrome ..");
+		log.info("initializeChrome() Launching google chrome ..");
 		System.setProperty("webdriver.chrome.driver", userDir + "\\drivers\\chromedriver79.exe");
 		driver = new ChromeDriver();
 		driver.manage().window().maximize();
 		driver.navigate().to(appURL);
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+
 	}
 
 	private void initializeFirefox(String appURL) {
@@ -77,7 +112,7 @@ public class TestBase {
 	}
 
 	private void initializeEdge(String appURL) {
-		log.info("Launching Edge browser...");	
+		log.info("Launching Edge browser...");
 		System.setProperty("webdriver.edge.driver", userDir + "\\drivers\\MicrosoftWebDriver_Release17134.exe");
 		driver = new EdgeDriver();
 		driver.manage().window().maximize();
@@ -85,14 +120,16 @@ public class TestBase {
 	}
 
 	private void initializeIE(String appURL) {
-		log.info("Launching Internet Explorer browser...");	
+		log.info("Launching Internet Explorer browser...");
 		System.setProperty("webdriver.ie.driver", userDir + "\\drivers\\IEDriverServer32bit.exe");
-		DesiredCapabilities caps = DesiredCapabilities.internetExplorer();
-		caps.setCapability("ignoreZoomSetting", true);
-		driver = new InternetExplorerDriver(caps);
+//		DesiredCapabilities caps = DesiredCapabilities.internetExplorer();
+//		caps.setCapability("ignoreZoomSetting", true);
+		driver = new InternetExplorerDriver();
 		driver.manage().window().maximize();
 		driver.navigate().to(appURL);
 	}
 
-
+	public String getPageTitle() {
+		return driver.getTitle();
+	}
 }
