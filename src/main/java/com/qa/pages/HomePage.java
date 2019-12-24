@@ -1,14 +1,11 @@
 package com.qa.pages;
 
-import java.io.File;
-
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-import com.qa.util.JsonParserUtil;
 import com.qa.util.LoggerUtil;
 
 public class HomePage {
@@ -34,10 +31,9 @@ public class HomePage {
 		PageFactory.initElements(driver, this);
 	}
 
-	public void readUsers() {
-		JsonParserUtil jsonParser = new JsonParserUtil();
-		File file;
-		jsonParser.ConvertJsonToType();
+	public void login(String user, String pass) {
+		log.info(" user=" + user + " pass=" + pass);
+
 	}
 
 	public void clickOnAsk() {

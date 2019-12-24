@@ -1,12 +1,5 @@
-[
-    {
-        "testcase": 1,
-        "user": "test1",
-        "login": "pass1",
-    },
-    {
-        "id": 2,
-        "user": "test2",
-        "login": "pass2",
-    }
-]
+{
+    "testcase": 1,
+    "user": "firstuser",
+    "login": "pass1"
+}

@@ -1,5 +1,9 @@
 package com.qa.tests;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -10,6 +14,7 @@ import org.testng.annotations.Test;
 
 import com.qa.base.TestBase;
 import com.qa.pages.HomePage;
+import com.qa.util.JsonParserUtil;
 
 public class HomePageTest extends TestBase {
 
@@ -17,56 +22,69 @@ public class HomePageTest extends TestBase {
 	HomePage homePage = null;
 
 	public HomePageTest() {
-		log.info("HomePageTest() constructor");
+		log.trace("HomePageTest() constructor");
 	}
 
 	@BeforeTest
 	public void BeforeTestHomePage() {
-		log.info("@BeforeTest");
+		log.trace("@BeforeTest");
 	}
 
 	@AfterTest
 	public void AfterTestHomePage() {
-		log.info("@@AfterTest");
+		log.trace("@@AfterTest");
 	}
 
 	@BeforeClass
 	public void BeforeClassHomePageTest() {
-		log.info("@BeforeClass ===>");
+		log.trace("@BeforeClass ===>");
 		driver = getDriver();
 		homePage = new HomePage(driver);
-		log.info("@BeforeClass <===");
+		log.trace("@BeforeClass <===");
 
 	}
 
 	@AfterClass
 	public void AfterClassHomePage() {
-		log.info("@@AfterClass");
+		log.trace("@@AfterClass");
 	}
 
 	@Test(priority = 1)
 	public void TestNavigationFromHomepageToTagspage() {
-		log.info("TestNavigationFromHomepageToTagspage  ===>");
+		log.trace("TestNavigationFromHomepageToTagspage  ===>");
 		homePage.navigateToTagsPage();
 		Assert.assertEquals("Tags - Stack Overflow", getPageTitle());
-		log.info("TestNavigationFromHomepageToTagspage  <===");
+		log.trace("TestNavigationFromHomepageToTagspage  <===");
 
 	}
-//
-//	@Test
-//	public void navigateFromHomePagetoUser() {
-//		homePage.navigateToUsers();
-//		;
-//	}
+
+	@Test
+	public void TestLogin() {
+		log.trace("");
+		JsonParserUtil jsonutil = new JsonParserUtil();
+
+		try {
+			String jsonStr = new String(Files.readAllBytes(Paths.get(userDir, "resources\\users.json")));
+			String key = "user";
+			String userDir = System.getProperty("user.dir");
+			log.info("json string is " + jsonStr);
+			String val = jsonutil.getJsonValue(jsonStr, key);
+
+			homePage.login(key, val);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	@Test
 	public void verifyTitle() {
-		log.info("verifyTitle ===>");
+		log.trace("verifyTitle ===>");
 		String title = getPageTitle();
 		log.info("pagetitle = " + title);
 //		Assert.assertEquals(title, "Google");
 		Assert.assertTrue(true);
-		log.info("verifyTitle <===");
+		log.trace("verifyTitle <===");
 
 	}
 //

@@ -22,35 +22,35 @@ public class TestBase {
 
 	public static WebDriver driver = null;
 	public static Logger log = LoggerUtil.getLogger();
-	String userDir = System.getProperty("user.dir");
+	private String userDir = System.getProperty("user.dir");
 
 	public TestBase() {
-		log.info("TestBase() constructor");
+		log.trace("TestBase() constructor");
 	}
 
 	public static WebDriver getDriver() {
-		log.info("getDriver driver=" + driver);
+		log.trace("getDriver driver=" + driver);
 		return driver;
 	}
 
 	@BeforeClass
 	public void BeforeClassTestBase() {
-		log.info("@BeforeClass TestBase");
+		log.trace("@BeforeClass TestBase");
 	}
 
 	@AfterClass
 	public void AfterClassTestBase() {
-		log.info("@AfterClass TestBase");
+		log.trace("@AfterClass TestBase");
 	}
 
 	@BeforeTest
 	public void BeforeTestTestBase() {
-		log.info("@BeforeTest TestBase");
+		log.trace("@BeforeTest TestBase");
 	}
 
 	@AfterTest
 	public void AfterTestTestBase() {
-		log.info("@AfterTest TestBase");
+		log.trace("@AfterTest TestBase");
 	}
 
 	@Parameters({ "browser" })
@@ -61,9 +61,9 @@ public class TestBase {
 		try {
 			initDriver(browser, appURL);
 		} catch (Exception e) {
-			log.info("Exception stack ....." + e.getStackTrace());
-			log.info("Exception String ....." + e.toString());
-			log.info("Exception Message....." + e.getMessage());
+			log.error("Exception stack ....." + e.getStackTrace());
+			log.error("Exception String ....." + e.toString());
+			log.error("Exception Message....." + e.getMessage());
 		}
 	}
 

@@ -1,38 +1,22 @@
 package com.qa.util;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-
 import org.apache.log4j.Logger;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonSyntaxException;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class JsonParserUtil {
 	Logger log = LoggerUtil.getLogger();
 
-	public void ConvertJsonToType() {
-		Gson gson = new Gson();
-		UserDetails[] users = null;
+	public String getJsonValue(String jsonStr, String key) {
+		String val = "";
+		JSONParser parser = new JSONParser();
 		try {
-			users = gson.fromJson(new FileReader("\\resources\\users.json"), UserDetails[].class);
-		} catch (JsonSyntaxException | JsonIOException | FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JSONObject jsonObject = (JSONObject) parser.parse(jsonStr);
+			val = (String) jsonObject.get(key);
+		} catch (ParseException e) {
+			log.info("error json parser");
 		}
-		log.info(users);
+		return val;
 	}
-}
-
-class Address {
-	String line1;
-	int pin;
-}
-
-class UserDetails {
-	int id;
-	String user;
-	String login;
-	Address a;
 }
