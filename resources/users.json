@@ -1,5 +1,23 @@
 {
-    "testcase": 1,
-    "user": "firstuser",
-    "login": "pass1"
+    "UserDetails": [{
+        "username": "rptrtest87@gmail.com",
+        "password": "putta123"
+    }],
+    "Consumers": [{
+            "FirstName": "John",
+            "LastName": "H",
+            "SSN": "1234",
+            "Gender": "Male",
+            "Prefix": "Mr.",
+            "Age": 30
+        },
+        {
+            "FirstName": "Kevin",
+            "LastName": "K",
+            "SSN": "1234",
+            "Gender": "Male",
+            "Prefix": "Mr.",
+            "Age": 40
+        }
+    ]
 }

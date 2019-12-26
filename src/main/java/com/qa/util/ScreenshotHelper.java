@@ -1,7 +1,6 @@
 package com.qa.util;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -14,16 +13,15 @@ import org.openqa.selenium.io.FileHandler;
 import com.qa.base.TestBase;
 
 public class ScreenshotHelper {
-	Logger log = LoggerUtil.getLogger();
+	private static Logger log = LoggerUtil.getLogger();
 
-	public String takeScreenshot(String testClassName, String testMethodName) {
-		String timeStamp = getCurrentTimeStamp();
-		String screenShotName = timeStamp + testMethodName + ".png";
+	public static String takeSnapshot(String msg) {
+		String snapshotFilename = getCurrentTimeStamp() + msg + ".png";
 		String fileSeperator = System.getProperty("file.separator");
-		String screenShotDir = System.getProperty("user.dir") + fileSeperator + "screenshots";
-		String screenshotPath;
+		String snapshotDir = System.getProperty("user.dir") + fileSeperator + "screenshots";
+		String snapshotPath;
 		try {
-			File file = new File(screenShotDir + fileSeperator + testClassName);
+			File file = new File(snapshotDir);
 			if (!file.exists()) {
 				if (file.mkdirs()) {
 					log.info("Directory: " + file.getAbsolutePath() + " is created!");
@@ -32,26 +30,21 @@ public class ScreenshotHelper {
 				}
 			}
 			WebDriver driver = TestBase.getDriver();
-			File screenshotFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-			screenshotPath = screenShotDir + fileSeperator + testClassName + fileSeperator + screenShotName;
-			File targetFile = new File(screenshotPath);
-			log.info("Target File location - " + targetFile.getAbsolutePath());
-			FileHandler.copy(screenshotFile, targetFile);
-		} catch (FileNotFoundException e) {
-			log.info("File not found exception occurred while taking screenshot " + e.getMessage());
-			screenshotPath = "";
+			File snapshotFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+			snapshotPath = snapshotDir + fileSeperator + snapshotFilename;
+			File targetFile = new File(snapshotPath);
+			FileHandler.copy(snapshotFile, targetFile);
 		} catch (Exception e) {
-			log.info("An exception occurred while taking screenshot " + e.getCause());
-			screenshotPath = "";
+			log.info("An exception occurred while taking screenshot " + e.getMessage());
+			snapshotPath = "";
 		}
-
-		return screenshotPath;
+		log.info("snapshotPath=" + snapshotPath);
+		return snapshotPath;
 	}
 
-
-	private String getCurrentTimeStamp() {
+	private static String getCurrentTimeStamp() {
 		Date date = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("HH_mm__dd_MM_yyyy__");
+		SimpleDateFormat sdf = new SimpleDateFormat("HH_mm_ss.SSS ");
 		String formattedDate = sdf.format(date);
 		return formattedDate;
 	}

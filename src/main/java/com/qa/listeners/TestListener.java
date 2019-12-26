@@ -1,85 +1,62 @@
 package com.qa.listeners;
 
-import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 
 import com.aventstack.extentreports.ExtentTest;
-import com.aventstack.extentreports.MediaEntityBuilder;
 import com.aventstack.extentreports.Status;
 import com.qa.extentreports.ReportManager;
 import com.qa.util.LoggerUtil;
-import com.qa.util.ScreenshotHelper;
 
 public class TestListener implements ITestListener {
-	Logger log = LoggerUtil.getLogger();
-	ExtentTest extentTest;
-	static ReportManager reportManager = new ReportManager();
-	static ScreenshotHelper screenshotHelper = new ScreenshotHelper();
+	private Logger log = LoggerUtil.getLogger();
+	private ExtentTest extentTest;
+	private static ReportManager reportManager = ReportManager.getInstance();
 
+	@Override
 	public void onStart(ITestContext context) {
 		log.info("*** Test Suite " + context.getName() + " started ***");
 	}
 
+	@Override
 	public void onFinish(ITestContext context) {
 		log.info(("*** Test Suite " + context.getName() + " ending ***"));
 		reportManager.flush();
 	}
 
+	@Override
 	public void onTestStart(ITestResult result) {
 		log.info(("*** Running test method " + result.getMethod().getMethodName() + "..."));
 		extentTest = reportManager.startTest(result.getMethod().getMethodName());
 	}
 
+	@Override
 	public void onTestSuccess(ITestResult result) {
 		log.info("*** Executed " + result.getMethod().getMethodName() + " test successfully...");
+		reportManager.takeSnapshotAndAttachToReport("Test passed");
 		extentTest.log(Status.PASS, "Test passed");
-
-		String testClassName = getTestClassName(result.getInstanceName()).trim();
-		String testMethodName = result.getName().toString().trim();
-
-		String screenshotPath = screenshotHelper.takeScreenshot(testClassName, testMethodName);
-		attachScreenshotToReport(screenshotPath, true);
 	}
 
+	@Override
 	public void onTestFailure(ITestResult result) {
 		log.info("*** Test execution " + result.getMethod().getMethodName() + " failed...");
+		reportManager.takeSnapshotAndAttachToReport("Test Failed");
 		extentTest.log(Status.FAIL, "Test Failed");
-		
-		String testClassName = getTestClassName(result.getInstanceName()).trim();
-		String testMethodName = result.getName().toString().trim();
-
-		String screenshotPath = screenshotHelper.takeScreenshot(testClassName, testMethodName);
-		attachScreenshotToReport(screenshotPath, false);
 	}
 
+	@Override
 	public void onTestSkipped(ITestResult result) {
 		log.info("*** Test " + result.getMethod().getMethodName() + " skipped...");
 		extentTest.log(Status.SKIP, "Test Skipped");
 	}
 
+	@Override
 	public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
 		log.info("*** Test failed but within percentage % " + result.getMethod().getMethodName());
 	}
 
-	private void attachScreenshotToReport(String path, boolean testPassed) {
-		if (path.isEmpty()) {
-			log.info("Screenshot path empty");
-			return;
-		}
-		// attach screenshots to report
-		try {
-			if (testPassed == true)
-				extentTest.pass("Screenshot", MediaEntityBuilder.createScreenCaptureFromPath(path).build());
-			else
-				extentTest.fail("Screenshot", MediaEntityBuilder.createScreenCaptureFromPath(path).build());
-		} catch (IOException e) {
-			log.info("An exception occured while attaching screenshot " + e.getCause());
-		}
-	}
-	
 	private String getTestClassName(String testName) {
 		log.info(" testName : " + testName);
 
@@ -89,6 +66,5 @@ public class TestListener implements ITestListener {
 		log.info("Required Test Name : " + reqTestClassname[i]);
 		return reqTestClassname[i];
 	}
-
 
 }

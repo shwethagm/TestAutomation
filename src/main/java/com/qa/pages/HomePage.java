@@ -25,14 +25,23 @@ public class HomePage {
 	@FindBy(xpath = "//a[@class='ws-nowrap s-btn s-btn__primary']")
 	WebElement askButton;
 
+	@FindBy(xpath = "//img[@class='bar-sm -avatar js-avatar-me']")
+	WebElement userProfilePic;
+
+	@FindBy(linkText = "Log in")
+	WebElement LoginBtn;
+
 	public HomePage(WebDriver driver) {
 		log.info("HomePage() constructor driver=" + driver);
 		this.driver = driver;
 		PageFactory.initElements(driver, this);
 	}
 
-	public void login(String user, String pass) {
-		log.info(" user=" + user + " pass=" + pass);
+	public LoginPage openLoginPage() {
+		LoginBtn.click();
+
+		LoginPage loginpage = new LoginPage(driver);
+		return loginpage;
 
 	}
 
@@ -45,6 +54,11 @@ public class HomePage {
 	public void navigateToTagsPage() {
 		log.info("navigateToTags");
 		tags.click();
+	}
+
+	public boolean IsLoginSuccessfull() {
+		boolean loginsuccess = userProfilePic.isDisplayed();
+		return loginsuccess;
 	}
 
 	public void navigateToUsers() {

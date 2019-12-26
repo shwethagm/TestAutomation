@@ -5,10 +5,10 @@
 		<listener class-name="com.qa.listeners.TestListener" />
 	</listeners>
 	<parameter name="browser" value="Chrome" />
+	<parameter name="appUrl" value="https://sqa.stackexchange.com/" />
 	<test name="Test1" preserve-order="true">
 		<classes>
-			<class name="com.qa.tests.HomePageTest" />
-			<class name="com.qa.tests.TagsPageTest" />
+			<class name="com.qa.tests.LoginScenarioTest" />
 		</classes>
 	</test>
 </suite>

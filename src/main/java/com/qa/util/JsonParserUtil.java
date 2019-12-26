@@ -1,22 +1,37 @@
 package com.qa.util;
 
+import java.io.FileReader;
+
 import org.apache.log4j.Logger;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 public class JsonParserUtil {
-	Logger log = LoggerUtil.getLogger();
+	private Logger log = LoggerUtil.getLogger();
+	private JsonParser parser = new JsonParser();
+	private String userDir = System.getProperty("user.dir");
 
-	public String getJsonValue(String jsonStr, String key) {
-		String val = "";
-		JSONParser parser = new JSONParser();
+	public <T> JsonArray getDataFromJson(String key) {
+		JsonArray jsonArray = null;
 		try {
-			JSONObject jsonObject = (JSONObject) parser.parse(jsonStr);
-			val = (String) jsonObject.get(key);
-		} catch (ParseException e) {
-			log.info("error json parser");
+			JsonElement jsonData = parser.parse(new FileReader(userDir + "\\resources\\users.json"));
+			jsonArray = jsonData.getAsJsonObject().getAsJsonArray(key);
+		} catch (Exception e) {
+			log.error("Json parse failed " + e.getMessage());
+			log.error("Json parse failed " + e.toString());
 		}
-		return val;
+		return jsonArray;
 	}
+
+//	public <T> T getDataFromJsonType(String key, T mytype) {
+//		JsonElement jsonData = parser.parse(new FileReader(userDir + "\\resources\\users.json"));
+//		JsonArray jsonArray = jsonData.getAsJsonObject().getAsJsonArray(key);
+//
+//		T[] user = new Gson().fromJson(jsonArray, T[].class);
+//
+//		return mytype;
+//
+//	}
 }

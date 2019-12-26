@@ -6,9 +6,12 @@ import org.apache.log4j.Logger;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.MediaEntityBuilder;
+import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import com.qa.util.LoggerUtil;
+import com.qa.util.ScreenshotHelper;
 
 public class ReportManager {
 	static ExtentReports extentReport = new ExtentReports();
@@ -16,13 +19,11 @@ public class ReportManager {
 	final static String fileSeperator = System.getProperty("file.separator");
 	final static String reportFilepath = System.getProperty("user.dir") + fileSeperator + "TestReport";
 	final static String reportFileLocation = reportFilepath + fileSeperator + reportFileName;
-	static Logger log = LoggerUtil.getLogger();
+	private static Logger log = LoggerUtil.getLogger();
+	private static ReportManager reportManager = null;
+	ExtentTest extentTest = null;
 
-	public ReportManager() {
-		createInstance();
-	}
-
-	private void createInstance() {
+	private void configureHtmlReport() {
 		String fileName = getReportPath(reportFilepath);
 		ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter(fileName);
 		htmlReporter.config().setTheme(Theme.DARK);
@@ -32,16 +33,49 @@ public class ReportManager {
 		extentReport.attachReporter(htmlReporter);
 	}
 
+	private ReportManager() {
+		log.info("");
+	}
+
+	// singleton
+	public static ReportManager getInstance() {
+		if (reportManager == null) {
+			reportManager = new ReportManager();
+			reportManager.configureHtmlReport();
+		}
+		return reportManager;
+
+	}
+
 	public ExtentTest startTest(String testName) {
-		return extentReport.createTest(testName);
+		extentTest = extentReport.createTest(testName);
+		return extentTest;
 	}
 
 	public void flush() {
 		extentReport.flush();
 	}
 
-	// Create the report path
-	private static String getReportPath(String path) {
+	private void attachScreenshotToReport(String msg, String path) {
+		if (path.isEmpty()) {
+			log.info("Screenshot path empty");
+			return;
+		}
+		log.info("msg=" + msg + " path=" + path);
+		try {
+			extentTest.log(Status.INFO, msg, MediaEntityBuilder.createScreenCaptureFromPath(path).build());
+		} catch (Exception e) {
+			log.info("exception = " + e.getMessage());
+			log.info("exception = " + e.toString());
+		}
+	}
+
+	public void takeSnapshotAndAttachToReport(String msg) {
+		String screenshotPath = ScreenshotHelper.takeSnapshot(msg);
+		attachScreenshotToReport(msg, screenshotPath);
+	}
+
+	private String getReportPath(String path) {
 		File testDirectory = new File(path);
 		if (!testDirectory.exists()) {
 			if (testDirectory.mkdir()) {

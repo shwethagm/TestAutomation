@@ -22,7 +22,7 @@ public class TestBase {
 
 	public static WebDriver driver = null;
 	public static Logger log = LoggerUtil.getLogger();
-	private String userDir = System.getProperty("user.dir");
+	public String userDir = System.getProperty("user.dir");
 
 	public TestBase() {
 		log.trace("TestBase() constructor");
@@ -53,13 +53,12 @@ public class TestBase {
 		log.trace("@AfterTest TestBase");
 	}
 
-	@Parameters({ "browser" })
+	@Parameters({ "browser", "appUrl" })
 	@BeforeSuite
-	public void initializeTestBaseSetup(String browser) {
-		String appURL = "https://stackoverflow.com/questions";
-		log.info("@@BeforeSuite browser=" + browser + " appURL=" + appURL);
+	public void initializeTestBaseSetup(String browser, String appUrl) {
+		log.info("@@BeforeSuite browser=" + browser + " appUrl=" + appUrl);
 		try {
-			initDriver(browser, appURL);
+			initDriver(browser, appUrl);
 		} catch (Exception e) {
 			log.error("Exception stack ....." + e.getStackTrace());
 			log.error("Exception String ....." + e.toString());
