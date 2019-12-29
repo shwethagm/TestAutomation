@@ -7,9 +7,9 @@ import org.testng.annotations.Test;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.qa.base.Consumer;
 import com.qa.base.TestBase;
-import com.qa.base.UserDetails;
+import com.qa.domain.Consumer;
+import com.qa.domain.UserDetails;
 import com.qa.extentreports.ReportManager;
 import com.qa.pages.HomePage;
 import com.qa.pages.LoginPage;
@@ -67,7 +67,6 @@ public class LoginScenarioTest extends TestBase {
 			log.error("json parse error");
 		}
 
-		Assert.assertTrue(false);
 	}
 
 	@Test

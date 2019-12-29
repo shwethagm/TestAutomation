@@ -14,19 +14,20 @@ import com.qa.util.LoggerUtil;
 import com.qa.util.ScreenshotHelper;
 
 public class ReportManager {
-	static ExtentReports extentReport = new ExtentReports();
-	final static String reportFileName = "Test-Automaton-Report" + ".html";
-	final static String fileSeperator = System.getProperty("file.separator");
-	final static String reportFilepath = System.getProperty("user.dir") + fileSeperator + "TestReport";
-	final static String reportFileLocation = reportFilepath + fileSeperator + reportFileName;
-	private static Logger log = LoggerUtil.getLogger();
+	ExtentReports extentReport = new ExtentReports();
+	final String reportFileName = "Test-Automaton-Report" + ".html";
+	final String fileSeperator = System.getProperty("file.separator");
+	final String reportFilepath = System.getProperty("user.dir") + fileSeperator + "TestReport";
+	final String reportFileLocation = reportFilepath + fileSeperator + reportFileName;
+	private Logger log = LoggerUtil.getLogger();
 	private static ReportManager reportManager = null;
 	ExtentTest extentTest = null;
 
 	private void configureHtmlReport() {
 		String fileName = getReportPath(reportFilepath);
 		ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter(fileName);
-		htmlReporter.config().setTheme(Theme.DARK);
+		htmlReporter.config().setTheme(Theme.STANDARD);
+		htmlReporter.config().enableTimeline(true);
 		htmlReporter.config().setDocumentTitle(reportFileName);
 		htmlReporter.config().setReportName(reportFileName);
 		htmlReporter.config().setTimeStampFormat("EEEE, MMMM dd, yyyy, hh:mm a '('zzz')'");
@@ -37,14 +38,12 @@ public class ReportManager {
 		log.info("");
 	}
 
-	// singleton
 	public static ReportManager getInstance() {
 		if (reportManager == null) {
 			reportManager = new ReportManager();
 			reportManager.configureHtmlReport();
 		}
 		return reportManager;
-
 	}
 
 	public ExtentTest startTest(String testName) {
@@ -54,6 +53,16 @@ public class ReportManager {
 
 	public void flush() {
 		extentReport.flush();
+	}
+
+	public void reportTestSuccess() {
+		takeSnapshotAndAttachToReport("Test passed");
+		extentTest.log(Status.PASS, "Test passed");
+	}
+
+	public void reportTestFailure() {
+		takeSnapshotAndAttachToReport("Test Failed");
+		extentTest.log(Status.FAIL, "Test Failed");
 	}
 
 	private void attachScreenshotToReport(String msg, String path) {
@@ -71,7 +80,7 @@ public class ReportManager {
 	}
 
 	public void takeSnapshotAndAttachToReport(String msg) {
-		String screenshotPath = ScreenshotHelper.takeSnapshot(msg);
+		String screenshotPath = new ScreenshotHelper().takeSnapshot(msg);
 		attachScreenshotToReport(msg, screenshotPath);
 	}
 

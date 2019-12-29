@@ -1,4 +1,4 @@
-package com.qa.base;
+package com.qa.domain;
 
 public class Consumer {
 	public String FirstName;

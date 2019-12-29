@@ -13,7 +13,6 @@ public class UsersPage extends TestBase {
 	WebElement users;
 
 	public UsersPage(WebDriver driver) {
-		log.info("UsersPage() driver=" + driver);
 		PageFactory.initElements(driver, this);
 	}
 }

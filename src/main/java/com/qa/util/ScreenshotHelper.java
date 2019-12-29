@@ -15,31 +15,34 @@ import com.qa.base.TestBase;
 public class ScreenshotHelper {
 	private static Logger log = LoggerUtil.getLogger();
 
-	public static String takeSnapshot(String msg) {
-		String snapshotFilename = getCurrentTimeStamp() + msg + ".png";
+	public String takeSnapshot(String msg) {
+		String snapFilename = getCurrentTimeStamp() + msg + ".png";
 		String fileSeperator = System.getProperty("file.separator");
-		String snapshotDir = System.getProperty("user.dir") + fileSeperator + "screenshots";
+		String snapsDirName = System.getProperty("user.dir") + fileSeperator + "TestReport" + fileSeperator
+				+ "snapshots";
 		String snapshotPath;
 		try {
-			File file = new File(snapshotDir);
-			if (!file.exists()) {
-				if (file.mkdirs()) {
-					log.info("Directory: " + file.getAbsolutePath() + " is created!");
+			File snapsDir = new File(snapsDirName);
+			if (!snapsDir.exists()) {
+				if (snapsDir.mkdirs()) {
+					log.info("Directory: " + snapsDir.getAbsolutePath() + " is created!");
 				} else {
-					log.info("Failed to create directory: " + file.getAbsolutePath());
+					log.info("Failed to create directory: " + snapsDir.getAbsolutePath());
 				}
 			}
 			WebDriver driver = TestBase.getDriver();
 			File snapshotFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-			snapshotPath = snapshotDir + fileSeperator + snapshotFilename;
+			snapshotPath = snapsDirName + fileSeperator + snapFilename;
 			File targetFile = new File(snapshotPath);
 			FileHandler.copy(snapshotFile, targetFile);
 		} catch (Exception e) {
 			log.info("An exception occurred while taking screenshot " + e.getMessage());
 			snapshotPath = "";
 		}
-		log.info("snapshotPath=" + snapshotPath);
-		return snapshotPath;
+
+		String relativePath = "snapshots" + fileSeperator + snapFilename;
+		log.info("snapshotPath=" + relativePath);
+		return relativePath;
 	}
 
 	private static String getCurrentTimeStamp() {

@@ -20,16 +20,15 @@ import com.qa.util.LoggerUtil;
 
 public class TestBase {
 
-	public static WebDriver driver = null;
-	public static Logger log = LoggerUtil.getLogger();
-	public String userDir = System.getProperty("user.dir");
+	private static WebDriver driver = null;
+	protected Logger log = LoggerUtil.getLogger();
+	private String userDir = System.getProperty("user.dir");
 
 	public TestBase() {
 		log.trace("TestBase() constructor");
 	}
 
 	public static WebDriver getDriver() {
-		log.trace("getDriver driver=" + driver);
 		return driver;
 	}
 

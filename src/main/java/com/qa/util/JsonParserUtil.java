@@ -13,7 +13,7 @@ public class JsonParserUtil {
 	private JsonParser parser = new JsonParser();
 	private String userDir = System.getProperty("user.dir");
 
-	public <T> JsonArray getDataFromJson(String key) {
+	public JsonArray getDataFromJson(String key) {
 		JsonArray jsonArray = null;
 		try {
 			JsonElement jsonData = parser.parse(new FileReader(userDir + "\\resources\\users.json"));
